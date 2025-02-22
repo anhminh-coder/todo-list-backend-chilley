@@ -12,8 +12,8 @@ func Routes(r *gin.RouterGroup) {
 	taskHandler := NewTaskHandler(taskService)
 	taskRoute := r.Group("/tasks")
 	{
-		taskRoute.GET("/", taskHandler.ListTasks)
-		taskRoute.POST("/", taskHandler.CreateTask)
+		taskRoute.GET("", taskHandler.ListTasks)
+		taskRoute.POST("", taskHandler.CreateTask)
 		taskRoute.PUT("/:id", taskHandler.UpdateTask)
 		taskRoute.DELETE("/:id", taskHandler.DeleteTask)
 	}

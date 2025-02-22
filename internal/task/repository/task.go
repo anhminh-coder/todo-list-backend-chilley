@@ -9,7 +9,7 @@ import (
 
 var ErrNotFound = errors.New("record not found")
 
-var tasks []*model.Task // in-memory db
+var tasks = make([]*model.Task, 0) // in-memory db
 
 type TaskRepository interface {
 	ListTasks(ctx context.Context) ([]*model.Task, error)

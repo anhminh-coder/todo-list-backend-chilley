@@ -2,6 +2,7 @@ package http
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"todo-list/internal/task/dto"
@@ -21,6 +22,7 @@ func NewTaskHandler(service service.TaskService) *TaskHandler {
 
 func (h *TaskHandler) ListTasks(ctx *gin.Context) {
 	tasks, err := h.service.ListTasks(ctx)
+	fmt.Println(tasks)
 	if err != nil {
 		response.Error(ctx, http.StatusInternalServerError, "something went wrong")
 		return

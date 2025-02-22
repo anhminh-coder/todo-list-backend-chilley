@@ -16,23 +16,19 @@ type Server struct {
 }
 
 func NewServer() *Server {
-	engine := gin.Default()
-	engine.Use(cors.Default())
 	return &Server{
-		engine: engine,
+		engine: gin.Default(),
 		cfg:    config.GetConfig(),
 	}
 }
 
 func (s Server) Run() {
-	_ = s.engine.SetTrustedProxies(nil)
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = fmt.Sprintf("%d", s.cfg.HttpPort)
 	}
-	if environment := os.Getenv("ENVIRONMENT"); environment == "production" {
-		gin.SetMode(gin.ReleaseMode)
-	}
+
+	s.engine.Use(corsMiddleware())
 	s.setupRoutes()
 
 	if err := s.engine.Run(":" + port); err != nil {
@@ -43,4 +39,12 @@ func (s Server) Run() {
 func (s Server) setupRoutes() {
 	v1 := s.engine.Group("/api/v1")
 	taskHttp.Routes(v1)
+}
+
+func corsMiddleware() gin.HandlerFunc {
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"*"}                                                // Allow requests from any origin
+	corsConfig.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"} // Allow specific HTTP methods
+	corsConfig.AllowHeaders = []string{"Authorization", "Content-Type"}                    // Allow specific headers
+	return cors.New(corsConfig)
 }
